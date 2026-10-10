@@ -377,6 +377,18 @@ footer { text-align: center; }
 #rewindTop:active { transform: translateY(2px); box-shadow: 0 1px 0 #0b0908; }
 
 /* ---------- custom tapes / add form ---------- */
+.empty-grid {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 22px 12px;
+  text-align: center;
+  font-size: .78rem;
+  letter-spacing: 1px;
+  color: #b39a7d;
+  border: 2px dashed var(--line);
+  border-radius: 10px;
+}
+
 .track-card { position: relative; }
 
 .card-remove {
