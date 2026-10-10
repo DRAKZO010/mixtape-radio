@@ -1,1 +1,72 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Mixtape Radio FM</title><link rel="stylesheet" href="styles.css"></head><body><header><h1>Mixtape Radio FM</h1></header><main><section id="home"><div class="boombox"><div class="lcd"><span id="lcdText">NOW TUNED TO: MIXTAPE RADIO FM</span></div></div><button id="playAllBtn">PLAY</button></section><section id="player"><h2>Cassette Deck</h2><div class="cassette" id="cassette"><div class="reel" id="leftReel"></div><div class="reel" id="rightReel"></div></div><div class="controls"><button id="btnPlay">PLAY</button><button id="btnPause">PAUSE</button><button id="btnStop">STOP</button><button id="btnRewind">REW</button><button id="btnFF">FF</button><button id="btnFlip">FLIP</button></div><div id="trackInfo"><span id="timeMin">00</span>:<span id="timeSec">00</span></div></section><section id="tuner"><h2>Tuner</h2><div id="freqDisplay">94.7 MHz</div><div class="dial"><div id="dialNeedle"></div></div><div id="stationName">Throwback Jams</div></section><section id="tracks"><h2>Tracks</h2><div id="cassetteGrid"></div></section></main><footer><button id="rewindTop">Top</button></footer><script src="script.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mixtape Radio FM</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Mixtape Radio FM</h1>
+    <p class="tagline">Insert tape &middot; press play &middot; rewind the 90s</p>
+  </header>
+
+  <main>
+    <section id="home" class="panel boombox-panel">
+      <div class="boombox">
+        <div class="speaker left"></div>
+        <div class="lcd"><span id="lcdText">NOW TUNED TO: MIXTAPE RADIO FM</span></div>
+        <div class="speaker right"></div>
+      </div>
+      <button id="playAllBtn" class="big-btn">PLAY</button>
+    </section>
+
+    <section id="player" class="panel">
+      <h2>Cassette Deck</h2>
+      <div class="cassette" id="cassette">
+        <div class="reels">
+          <div class="reel" id="leftReel"></div>
+          <div class="reel" id="rightReel"></div>
+        </div>
+        <div class="tape-label">
+          <span id="nowTitle">&mdash;</span>
+          <span id="nowArtist">&mdash;</span>
+        </div>
+      </div>
+      <div class="progress"><div id="progressBar"></div></div>
+      <div id="trackInfo"><span id="timeMin">00</span>:<span id="timeSec">00</span></div>
+      <div class="controls">
+        <button id="btnRewind">REW</button>
+        <button id="btnPlay">PLAY</button>
+        <button id="btnPause">PAUSE</button>
+        <button id="btnStop">STOP</button>
+        <button id="btnFF">FF</button>
+        <button id="btnFlip">FLIP</button>
+      </div>
+      <label class="volume">VOL <input type="range" id="volume" min="0" max="1" step="0.01" value="0.7"></label>
+    </section>
+
+    <section id="tuner" class="panel">
+      <h2>Tuner</h2>
+      <div class="tuner-row">
+        <button id="tunePrev" aria-label="Previous station">&#9664;</button>
+        <div id="freqDisplay">94.7 MHz</div>
+        <button id="tuneNext" aria-label="Next station">&#9654;</button>
+      </div>
+      <div class="dial" id="dial"><div id="dialNeedle"></div></div>
+      <div id="stationName">Throwback Jams</div>
+    </section>
+
+    <section id="tracks" class="panel">
+      <h2>Tracks</h2>
+      <div id="cassetteGrid"></div>
+    </section>
+  </main>
+
+  <footer><button id="rewindTop">Top</button></footer>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
