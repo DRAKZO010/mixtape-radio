@@ -11,6 +11,7 @@
 - Volume slider.
 - Full 90s boombox/cassette visual theme.
 - Real internet radio: the four tuner stations now stream live (SomaFM + Radio Paradise).
+- Connected the tuner to the live Radio-Browser directory — it loads real stations on startup and **SCAN** searches by genre / name / country, with a built-in offline fallback.
 - Add-your-own-tape form — paste any audio/stream URL to create a playable cassette, persisted in `localStorage`.
 - `<audio>` playback engine with `LIVE` display, stream-error handling and auto-advance.
 - Replaced the placeholder synth tracks (and the Web Audio engine that played them) — the deck ships empty and plays real radio or your own tapes.

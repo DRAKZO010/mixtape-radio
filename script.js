@@ -1,27 +1,104 @@
-const TRACKS = [];
-
-const STATIONS = [
-  { freq: 88.1,  name: "Groove Salad",    genre: "Chill", live: true, src: "https://ice1.somafm.com/groovesalad-128-mp3" },
-  { freq: 94.7,  name: "Throwback Jams",  genre: "Retro", live: true, src: "https://ice1.somafm.com/u80s-128-mp3" },
-  { freq: 101.3, name: "Radio Paradise",  genre: "Hype",  live: true, src: "https://stream.radioparadise.com/mp3-192" },
-  { freq: 107.9, name: "Left Coast 70s",  genre: null,    live: true, src: "https://ice1.somafm.com/seventies-128-mp3" }
+const MIRRORS = [
+  "https://de1.api.radio-browser.info",
+  "https://nl1.api.radio-browser.info",
+  "https://at1.api.radio-browser.info"
 ];
+
+const FALLBACK_STATIONS = [
+  { name: "Groove Salad", src: "https://ice1.somafm.com/groovesalad-128-mp3", country: "US", genre: "Chill" },
+  { name: "Throwback Jams", src: "https://ice1.somafm.com/u80s-128-mp3", country: "US", genre: "Retro" },
+  { name: "Radio Paradise", src: "https://stream.radioparadise.com/mp3-192", country: "US", genre: "Hype" },
+  { name: "Left Coast 70s", src: "https://ice1.somafm.com/seventies-128-mp3", country: "US", genre: "Retro" }
+];
+
+let TRACKS = [];
+let STATIONS = [];
 
 const COLORS = { cream: "#ffcf6b", pink: "#ff4fa3", teal: "#25c9c9" };
 const CUSTOM_KEY = "mixtape-custom-tapes";
 
-const state = { mode: "radio", index: 0, station: 1, playing: false, volume: 0.7, side: "A" };
+const state = { mode: "radio", index: 0, station: 0, playing: false, volume: 0.7, side: "A" };
 
 const $ = (id) => document.getElementById(id);
-const currentStation = () => STATIONS[state.station];
+const currentTrack = () => TRACKS[state.index];
+const currentStation = () => STATIONS[state.station] || STATIONS[0];
 const audioEl = $("audioEl");
 
+/* ---------- station directory (Radio-Browser) ---------- */
+function assignFrequencies(list) {
+  const n = list.length;
+  const lo = 88;
+  const hi = 108;
+  const step = n > 1 ? (hi - lo) / (n - 1) : 0;
+  return list.map((s, i) => Object.assign({}, s, { freq: +(lo + i * step).toFixed(1), live: true }));
+}
+
+function normalizeStations(data) {
+  if (!Array.isArray(data)) return [];
+  return data
+    .filter((s) => s && s.url_resolved && s.hls !== 1 && s.lastcheckok === 1)
+    .map((s) => ({
+      name: String(s.name || "").trim(),
+      src: s.url_resolved,
+      country: s.country || "",
+      codec: (s.codec || "").toUpperCase(),
+      bitrate: s.bitrate || 0,
+      genre: ((s.tags || "").split(",")[0] || "Radio").replace(/^\w/, (c) => c.toUpperCase())
+    }))
+    .filter((s) => s.name);
+}
+
+async function tryFetch(path) {
+  for (const mirror of MIRRORS) {
+    try {
+      const res = await fetch(mirror + path);
+      if (!res.ok) continue;
+      const list = normalizeStations(await res.json());
+      if (list.length) return list;
+    } catch {}
+  }
+  return [];
+}
+
+async function fetchStations(term) {
+  const q = "limit=30&hidebroken=true&order=clickcount&reverse=true";
+  const attempts = term
+    ? [
+        "/json/stations/search?name=" + encodeURIComponent(term) + "&" + q,
+        "/json/stations/search?tag=" + encodeURIComponent(term) + "&" + q,
+        "/json/stations/search?country=" + encodeURIComponent(term) + "&" + q
+      ]
+    : ["/json/stations/topclick/30?" + q];
+  for (const path of attempts) {
+    const list = await tryFetch(path);
+    if (list.length) return assignFrequencies(list);
+  }
+  throw new Error("no stations");
+}
+
+function applyStations(list) {
+  STATIONS = list;
+  state.station = 0;
+  state.mode = "radio";
+  renderTuner();
+  updateNow();
+  renderGrid();
+  if (state.playing) {
+    loadAudio(currentSource().src);
+    audioEl.play().catch(() => setStatus("STREAM BLOCKED \u2014 TRY ANOTHER"));
+  } else {
+    updateLCD();
+  }
+  updateClock();
+}
+
+/* ---------- source model ---------- */
 function currentSource() {
   if (state.mode === "radio" || !TRACKS.length) {
     const st = currentStation();
     return { kind: "radio", title: st.name, artist: st.freq.toFixed(1) + " FM", src: st.src, live: true, color: COLORS.teal };
   }
-  const tr = TRACKS[state.index];
+  const tr = currentTrack();
   return { kind: "tape", title: tr.title, artist: tr.artist, src: tr.src || null, live: false, duration: tr.duration || 0, color: COLORS[tr.color] || "#ffb000" };
 }
 
@@ -115,6 +192,9 @@ function renderTuner() {
   $("freqDisplay").textContent = st.freq.toFixed(1) + " MHz";
   $("stationName").textContent = st.name;
   $("dialNeedle").style.left = (((st.freq - 88) / (108 - 88)) * 100) + "%";
+  $("stationCount").textContent = STATIONS.length + (STATIONS.length === 1 ? " station" : " stations");
+  const bits = [st.country, st.codec, st.bitrate ? st.bitrate + "k" : ""].filter(Boolean);
+  $("stationInfo").textContent = bits.join(" \u00B7 ");
 }
 
 /* ---------- selection / transport ---------- */
@@ -238,6 +318,8 @@ function loop() {
 
 /* ---------- events / init ---------- */
 function init() {
+  STATIONS = assignFrequencies(FALLBACK_STATIONS.slice());
+
   loadCustom();
   renderGrid();
   renderTuner();
@@ -272,14 +354,29 @@ function init() {
   $("dial").addEventListener("click", (e) => {
     const rect = $("dial").getBoundingClientRect();
     const ratio = Math.min(1, Math.max(0, (e.clientX - rect.left) / rect.width));
-    const freq = 88 + ratio * 20;
+    const target = 88 + ratio * 20;
     let best = 0;
     let bestDist = Infinity;
     STATIONS.forEach((st, i) => {
-      const d = Math.abs(st.freq - freq);
+      const d = Math.abs(st.freq - target);
       if (d < bestDist) { bestDist = d; best = i; }
     });
     changeStation(best - state.station);
+  });
+
+  $("stationForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const term = $("stationQuery").value.trim();
+    const btn = $("stationScan");
+    btn.disabled = true;
+    $("stationCount").textContent = "Scanning\u2026";
+    try {
+      applyStations(await fetchStations(term || null));
+    } catch {
+      $("stationCount").textContent = "No stations found \u2014 try another search";
+    } finally {
+      btn.disabled = false;
+    }
   });
 
   const vol = $("volume");
@@ -300,6 +397,11 @@ function init() {
   });
 
   requestAnimationFrame(loop);
+
+  $("stationCount").textContent = "Connecting to station directory\u2026";
+  fetchStations(null)
+    .then(applyStations)
+    .catch(() => { $("stationCount").textContent = "Directory unreachable \u2014 using built-in stations"; });
 }
 
 document.addEventListener("DOMContentLoaded", init);

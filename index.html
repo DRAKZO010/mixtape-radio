@@ -52,14 +52,22 @@
 
     <section id="tuner" class="panel">
       <h2>Real Radio</h2>
+      <form id="stationForm" class="station-search" autocomplete="off">
+        <input id="stationQuery" type="text" placeholder="Search genre, name or country…" aria-label="Search real stations">
+        <button type="submit" id="stationScan">SCAN</button>
+      </form>
       <div class="tuner-row">
         <button id="tunePrev" aria-label="Previous station">&#9664;</button>
-        <div id="freqDisplay">94.7 MHz</div>
+        <div id="freqDisplay">88.1 MHz</div>
         <button id="tuneNext" aria-label="Next station">&#9654;</button>
       </div>
       <div class="dial" id="dial"><div id="dialNeedle"></div></div>
-      <div id="stationName">Throwback Jams</div>
-      <p class="hint">Live internet stations &mdash; needs a connection. Press PLAY to listen.</p>
+      <div id="stationName">&mdash;</div>
+      <div class="station-meta">
+        <span id="stationCount">Connecting to station directory&hellip;</span>
+        <span id="stationInfo"></span>
+      </div>
+      <p class="hint">Live stations from the Radio-Browser directory &mdash; needs a connection. Press PLAY to listen.</p>
     </section>
 
     <section id="tracks" class="panel">

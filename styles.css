@@ -248,6 +248,42 @@ header h1 {
 .volume input { flex: 1; accent-color: var(--accent); }
 
 /* ---------- tuner ---------- */
+.station-search {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.station-search input {
+  flex: 1;
+  padding: 10px;
+  font: inherit;
+  font-size: .8rem;
+  color: var(--text);
+  background: #0c0908;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+}
+
+.station-search input::placeholder { color: #7f6a56; }
+.station-search input:focus { outline: none; border-color: var(--accent); }
+
+.station-search button {
+  padding: 10px 16px;
+  font: inherit;
+  font-size: .8rem;
+  letter-spacing: 2px;
+  color: #120d0a;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffe08a, var(--accent));
+  box-shadow: 0 3px 0 #a56500;
+}
+
+.station-search button:active { transform: translateY(2px); box-shadow: 0 1px 0 #a56500; }
+.station-search button:disabled { opacity: .6; cursor: default; }
+
 .tuner-row { display: flex; align-items: center; gap: 12px; }
 
 .tuner-row button {
@@ -305,6 +341,18 @@ header h1 {
 }
 
 #stationName { text-align: center; font-size: .8rem; letter-spacing: 3px; color: #d8b48a; }
+
+.station-meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 8px;
+  font-size: .68rem;
+  letter-spacing: 1px;
+  color: #b39a7d;
+}
+
+#stationInfo { text-align: right; }
 
 /* ---------- track grid ---------- */
 #cassetteGrid {
