@@ -10,8 +10,10 @@
 <div class="app">
   <header>
     <h1>Mixtape Radio FM</h1>
-    <p class="tagline">Insert tape &middot; press play &middot; rewind the 90s</p>
+    <p class="tagline">Insert tape &middot; tune the dial &middot; rewind the 90s</p>
   </header>
+
+  <audio id="audioEl" preload="none" crossorigin="anonymous"></audio>
 
   <main>
     <section id="home" class="panel boombox-panel">
@@ -49,7 +51,7 @@
     </section>
 
     <section id="tuner" class="panel">
-      <h2>Tuner</h2>
+      <h2>Real Radio</h2>
       <div class="tuner-row">
         <button id="tunePrev" aria-label="Previous station">&#9664;</button>
         <div id="freqDisplay">94.7 MHz</div>
@@ -57,11 +59,20 @@
       </div>
       <div class="dial" id="dial"><div id="dialNeedle"></div></div>
       <div id="stationName">Throwback Jams</div>
+      <p class="hint">Live internet stations &mdash; needs a connection. Press PLAY to listen.</p>
     </section>
 
     <section id="tracks" class="panel">
-      <h2>Tracks</h2>
+      <h2>Tapes</h2>
       <div id="cassetteGrid"></div>
+
+      <form id="addCassette" class="add-cassette" autocomplete="off">
+        <input id="acTitle" type="text" placeholder="Title" required aria-label="Tape title">
+        <input id="acArtist" type="text" placeholder="Artist" aria-label="Artist">
+        <input id="acUrl" type="url" placeholder="Audio URL (mp3 / stream)" required aria-label="Audio URL">
+        <button type="submit">+ ADD TAPE</button>
+      </form>
+      <p class="hint">Paste a direct link to an audio file or stream and it becomes a playable cassette.</p>
     </section>
   </main>
 

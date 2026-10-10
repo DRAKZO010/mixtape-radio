@@ -11,6 +11,9 @@
 - Animated spinning reels while playing.
 - Volume slider.
 - Full 90s boombox/cassette visual theme.
+- Real internet radio: the four tuner stations now stream live (SomaFM + Radio Paradise).
+- Add-your-own-tape form — paste any audio/stream URL to create a playable cassette, persisted in `localStorage`.
+- `<audio>` playback engine alongside the Web Audio synth, with `LIVE` display, stream-error handling and auto-advance.
 
 ## Next ideas
 

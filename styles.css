@@ -376,9 +376,78 @@ footer { text-align: center; }
 
 #rewindTop:active { transform: translateY(2px); box-shadow: 0 1px 0 #0b0908; }
 
+/* ---------- custom tapes / add form ---------- */
+.track-card { position: relative; }
+
+.card-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  font: inherit;
+  font-size: .9rem;
+  line-height: 1;
+  color: #ffdede;
+  cursor: pointer;
+  border: 1px solid #7a2b2b;
+  border-radius: 50%;
+  background: #4a1f1f;
+}
+
+.card-remove:hover { background: #7a2b2b; }
+
+.add-cassette {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.add-cassette input {
+  padding: 10px;
+  font: inherit;
+  font-size: .8rem;
+  color: var(--text);
+  background: #0c0908;
+  border: 2px solid var(--line);
+  border-radius: 8px;
+}
+
+.add-cassette input::placeholder { color: #7f6a56; }
+.add-cassette input:focus { outline: none; border-color: var(--accent); }
+.add-cassette input#acUrl { grid-column: 1 / -1; }
+
+.add-cassette button {
+  grid-column: 1 / -1;
+  padding: 12px;
+  font: inherit;
+  font-size: .85rem;
+  letter-spacing: 3px;
+  color: #120d0a;
+  cursor: pointer;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #ffe08a, var(--accent));
+  box-shadow: 0 3px 0 #a56500;
+}
+
+.add-cassette button:active { transform: translateY(2px); box-shadow: 0 1px 0 #a56500; }
+
+.hint {
+  margin: 12px 0 0;
+  font-size: .72rem;
+  letter-spacing: 1px;
+  text-align: center;
+  opacity: .6;
+}
+
 @media (max-width: 520px) {
   .boombox { grid-template-columns: 44px 1fr 44px; }
   .speaker { height: 44px; }
   .controls button { flex-basis: 70px; }
   .reels { gap: 30px; }
+  .add-cassette { grid-template-columns: 1fr; }
+  .add-cassette input#acUrl { grid-column: auto; }
 }
